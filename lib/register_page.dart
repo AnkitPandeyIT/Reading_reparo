@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:form_validator/form_validator.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -16,20 +18,32 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   void dispose() {
     email: _emailController.dispose();
     password: _passwordController.dispose();
     confirmPassword: _confirmPasswordController.dispose();
+    name:   _nameController.dispose();
     super.dispose();
   }
 
   Future signUp() async{
   if(passwordConfirmed()){
     await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+        password: _passwordController.text.trim()).catchError((e){
+    Fluttertoast.showToast(msg: e!.message);
+    });
+    // add user name to detabase
+    addUserName(_nameController.text.trim());
   }
+  }
+
+  Future addUserName(String userName) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'name': userName,
+    });
   }
 
   bool passwordConfirmed(){
@@ -40,6 +54,8 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
   }
+
+  final _formKey = GlobalKey<FormState>();
   // Initial Selected Value
   String dropdownvalue = 'Student';
 
@@ -97,6 +113,40 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(height: 30,),
 
 
+                    //name field
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextFormField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Full Name',
+                            ),
+                            keyboardType: TextInputType.name,
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return ("Please Enter your name");
+                              }
+
+                          },
+
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15,),
+
+
+
+
                     //email field
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -108,12 +158,27 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
+                          child: TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Email',
                             ),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return ("Please Enter Email");
+                              }
+                              // reg expression for email validation
+                              if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                  .hasMatch(value)) {
+                                return ("Please Enter a valid email");
+                              }
+                              return null;
+                            }, onSaved: (value) {
+                            _emailController.text = value!;
+                          },
+
                           ),
                         ),
                       ),
@@ -133,13 +198,27 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
+                          child: TextFormField(
                             controller: _passwordController,
                             obscureText: true,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Password',
                             ),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return ("Please Enter Email");
+                              }
+                              // reg expression for email validation
+                              if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                  .hasMatch(value)) {
+                                return ("Please Enter a valid email");
+                              }
+                              return null;
+                            }, onSaved: (value) {
+                            _emailController.text = value!;
+                          },
                           ),
                         ),
                       ),

@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'register_page.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:reading_reparo/SecondScreen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,13 +16,25 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  final _formKey = GlobalKey<FormState>();
+
+  final _auth = FirebaseAuth.instance;
+
+  // string for displaying the error Message
+  String? errorMessage;
+
   //text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   Future signIn() async{
-    await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    if(_formKey.currentState!.validate()) {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim()).catchError((e){
+        Fluttertoast.showToast(msg: e!.message);
+      });
+    }
   }
 
   Future goToRegisterPage() async{
@@ -101,12 +117,27 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
+                      child: TextFormField(
                         controller: _emailController,
+
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Email',
                         ),
+                      keyboardType: TextInputType.emailAddress,
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return ("Please Enter Email");
+                          }
+                          // reg expression for email validation
+                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                              .hasMatch(value)) {
+                            return ("Please Enter a valid email");
+                          }
+                          return null;
+                        }, onSaved: (value) {
+                        _emailController.text = value!;
+                      },
                       ),
                     ),
                   ),
@@ -126,13 +157,25 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
+                      child: TextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Password',
                         ),
+                        validator: (value){
+                          RegExp regex = new RegExp(r'^.{6,}$');
+                          if (value!.isEmpty) {
+                            return ("Password is required for login");
+                          }
+                          if (!regex.hasMatch(value)) {
+                            return ("Enter Valid Password(Min. 6 Character)");
+                          }
+                        }, onSaved: (value) {
+                        _passwordController.text = value!;
+                      },
+
                       ),
                     ),
                   ),

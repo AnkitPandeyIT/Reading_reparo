@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:reading_reparo/SpeechScreen.dart';
 import 'LibraryScreen.dart';
@@ -16,6 +17,9 @@ class feedBackScreenRoute extends StatelessWidget {
   late List content;
   late List<String> wrong;
   late double correct;
+  int reward = 0;
+  double score =0;
+
   //const feedBackScreenRoute({Key key, @required this.words }) :super(key:key);
 
   feedBackScreenRoute(@required List<String> words,
@@ -23,16 +27,11 @@ class feedBackScreenRoute extends StatelessWidget {
     this.langId = langId;
     this.words = words;
     this.content = content;
-    if (words.length == 0) {
-      this.wrong = content;
-      this.correct = 0;
-    } else {
-      this.wrong = (content.where((e) => !words.contains(e))).toList();
-      this.wrong.removeWhere((element) => element == ' ');
-      this.wrong.removeWhere((element) => element == '  ');
-      this.wrong.removeWhere((element) => element == '');
-      this.correct = this.content.length - this.wrong.length.toDouble() - 5.0;
-    }
+    this.wrong = (content.where((e) => !words.contains(e))).toList();
+    this.wrong.removeWhere((element) => element == ' ');
+    this.wrong.removeWhere((element) => element == '  ');
+    this.wrong.removeWhere((element) => element == '');
+    this.correct = this.content.length - this.wrong.length.toDouble();
   }
 
   void speakBack(String langId, String word) async {
@@ -42,6 +41,94 @@ class feedBackScreenRoute extends StatelessWidget {
     //await flutterTts.awaitSpeakCompletion(true);
   }
 
+
+
+  giveReward() {
+     score = (correct / content.length) * 100; // store this as score
+    if (score > 90) {
+      reward = 5;
+      print("Rewarding " + reward.toString() + ' points');
+
+
+      return Column(
+        children: [
+          Image.asset("assets/rewards/coins.gif", height: 100, width: 100),
+          Text("You have earned 5 coins")
+        ],
+      );
+    } else if (score > 80) {
+      reward = 4; // store reward
+      print("Rewarding " + reward.toString() + ' points');
+
+
+
+      return Column(
+        children: [
+          Image.asset("assets/rewards/coins.gif", height: 100, width: 100),
+          Text("You have earned 4 coins")
+        ],
+      );
+    } else if (score > 70) {
+      reward = 3; // store reward
+      print("Rewarding " + reward.toString() + ' points');
+
+      return Column(
+        children: [
+          Image.asset("assets/rewards/coins.gif", height: 100, width: 100),
+          Text("You have earned 3 coins")
+        ],
+      );
+    } else if (score > 60) {
+      reward = 2; // store reward
+      print("Rewarding " + reward.toString() + ' points');
+
+
+
+      return Column(
+        children: [
+          Image.asset("assets/rewards/coins.gif", height: 100, width: 100),
+          Text("You have earned 2 coins")
+        ],
+      );
+    } else if (score > 50) {
+      reward = 1; // stoe reward
+      print("Rewarding " + reward.toString() + ' points');
+
+
+
+      return Column(
+        children: [
+          Image.asset("assets/rewards/coins.gif", height: 100, width: 100),
+          Text("You have earned 1 coins")
+        ],
+      );
+    } else {
+      reward = 0; //store reward
+      print("Rewarding " + reward.toString() + ' points');
+
+
+      return Text("Better luck next time!");
+
+    }
+
+     Future addUserDetails(int rewrd, double scr) async {
+       await FirebaseFirestore.instance.collection('users').add({
+         'Reward': rewrd,
+         'Score': scr,
+       });
+     }
+
+  }
+
+  addUserDetails(int rewrd, double scr) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'Reward': rewrd,
+      'Score': scr,
+    });
+  }
+
+
+  // reward dialog box
   void _showAlertDialog(context) {
     showDialog(
         context: context,
@@ -49,11 +136,18 @@ class feedBackScreenRoute extends StatelessWidget {
           return AlertDialog(
             backgroundColor: Colors.white,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            content: Text("Your score is " + correct.toString()),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: Container(
+              width: 150,
+              height: 150,
+              child: giveReward(),
+            ),
             actions: [
               MaterialButton(
                   onPressed: () {
+                    // store coins
+                    // flush variables
+
                     SecondRoute.contentLimit = '';
                     LibraryRoute.contentLimit = '';
                     langId = '';
@@ -68,100 +162,108 @@ class feedBackScreenRoute extends StatelessWidget {
         });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Assessment'),
-        ),
-        body: ListView(children: [
-          Container(
-            padding: EdgeInsets.only(left: 100, top: 10),
-            height: 200,
-            width: 200,
-            child: PieChart(
-              dataMap: <String, double>{'Correct': correct},
-              chartType: ChartType.ring,
-              baseChartColor: Colors.grey.shade700,
-              colorList: [Colors.green.shade400],
-              chartValuesOptions:
-                  ChartValuesOptions(showChartValuesInPercentage: false),
-              totalValue: content.length.toDouble(),
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text('Assessment'),
             ),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Text(
-            "Let's review what you got wrong",
-            style: TextStyle(
-              fontSize: 18,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              child: Scrollbar(
-                  thickness: 10,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: wrong.length,
-                    itemBuilder: (((context, index) {
-                      return Container(
-                          padding: EdgeInsets.all(5),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                speakBack(langId, wrong[index]);
-                              },
-                              child: Text(
-                                wrong[index],
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.blue[500]),
-                                  shape: myRoundedBorder(20),
-                                  fixedSize: MaterialStateProperty.all(
-                                      Size(240, 130)))));
-                    })),
-                  ))),
-          Container(
-              padding: EdgeInsets.all(100),
-              child: ElevatedButton(
-                onPressed: () {
-                  correct = 0;
-                  words = [];
-                  Navigator.pop(context);
+            body: ListView(children: [
+              Container(
+                padding: EdgeInsets.only(left: 100, top: 10),
+                height: 200,
+                width: 200,
+                child: PieChart(
+                  dataMap: <String, double>{
+                    'Correct': (correct / content.length) * 100
+                  },
+                  chartType: ChartType.ring,
+                  baseChartColor: Colors.grey.shade700,
+                  colorList: [Colors.green.shade400],
+                  chartValuesOptions:
+                  ChartValuesOptions(showChartValuesInPercentage: true),
+                  totalValue: 100,
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                "Let's review what you got wrong",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                  height: 100,
+                  width: MediaQuery.of(context).size.width,
+                  child: Scrollbar(
+                      thickness: 10,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: wrong.length,
+                        itemBuilder: (((context, index) {
+                          return Container(
+                              padding: EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    speakBack(langId, wrong[index]);
+                                  },
+                                  child: Text(
+                                    wrong[index],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all(
+                                          Colors.blue[500]),
+                                      shape: myRoundedBorder(20),
+                                      fixedSize: MaterialStateProperty.all(
+                                          Size(240, 130)))));
+                        })),
+                      ))),
+              Container(
+                  padding: EdgeInsets.all(100),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      words = [];
+                      Navigator.pop(context);
+                    },
+                    child: Text("Retry?"),
+                    style: ButtonStyle(
+                        shape: myRoundedBorder(20),
+                        fixedSize: MaterialStateProperty.all(Size(50, 50))),
+                  )),
+              SlideAction(
+                onSubmit: () async {
+                  _showAlertDialog(context);
                 },
-                child: Text("Retry?"),
-                style: ButtonStyle(
-                    shape: myRoundedBorder(20),
-                    fixedSize: MaterialStateProperty.all(Size(50, 50))),
-              )),
-          SlideAction(
-            onSubmit: () async {
-              userPreferences.userScore += correct.toInt(); // saving score
-              _showAlertDialog(context);
-            },
-            borderRadius: 12,
-            elevation: 10,
-            innerColor: Colors.blue.shade200,
-            outerColor: Colors.blue.shade500,
-            sliderButtonIcon: const Icon(
-              Icons.arrow_forward_outlined,
-              color: Colors.white,
-            ),
-            text: 'Submit Score',
-            sliderRotate: false,
-          ),
-        ]));
+                borderRadius: 12,
+                elevation: 10,
+                innerColor: Colors.blue.shade200,
+                outerColor: Colors.blue.shade500,
+                sliderButtonIcon: const Icon(
+                  Icons.arrow_forward_outlined,
+                  color: Colors.white,
+                ),
+                text: 'Claim reward!',
+                sliderRotate: false,
+              ),
+            ])));
   }
+
 }
