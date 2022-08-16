@@ -18,7 +18,7 @@ class feedBackScreenRoute extends StatelessWidget {
   late List<String> wrong;
   late double correct;
   int reward = 0;
-  double score =0;
+
 
   //const feedBackScreenRoute({Key key, @required this.words }) :super(key:key);
 
@@ -34,6 +34,18 @@ class feedBackScreenRoute extends StatelessWidget {
     this.correct = this.content.length - this.wrong.length.toDouble();
   }
 
+  Future addScore(double scr) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'Score': scr,
+    });
+  }
+
+  Future addReward(int rewd) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'Reward': rewd,
+    });
+  }
+
   void speakBack(String langId, String word) async {
     FlutterTts flutterTts = FlutterTts();
     await flutterTts.setLanguage(langId);
@@ -44,10 +56,13 @@ class feedBackScreenRoute extends StatelessWidget {
 
 
   giveReward() {
-     score = (correct / content.length) * 100; // store this as score
+     double score = (correct / content.length) * 100; // store this as score
+     addScore(score);
     if (score > 90) {
       reward = 5;
       print("Rewarding " + reward.toString() + ' points');
+      addReward(reward);
+
 
 
       return Column(
@@ -58,6 +73,7 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 80) {
       reward = 4; // store reward
+      addReward(reward);
       print("Rewarding " + reward.toString() + ' points');
 
 
@@ -70,6 +86,7 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 70) {
       reward = 3; // store reward
+      addReward(reward);
       print("Rewarding " + reward.toString() + ' points');
 
       return Column(
@@ -80,6 +97,7 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 60) {
       reward = 2; // store reward
+      addReward(reward);
       print("Rewarding " + reward.toString() + ' points');
 
 
@@ -92,6 +110,7 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 50) {
       reward = 1; // stoe reward
+      addReward(reward);
       print("Rewarding " + reward.toString() + ' points');
 
 
@@ -104,6 +123,7 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else {
       reward = 0; //store reward
+      addReward(reward);
       print("Rewarding " + reward.toString() + ' points');
 
 
@@ -111,21 +131,11 @@ class feedBackScreenRoute extends StatelessWidget {
 
     }
 
-     Future addUserDetails(int rewrd, double scr) async {
-       await FirebaseFirestore.instance.collection('users').add({
-         'Reward': rewrd,
-         'Score': scr,
-       });
-     }
+
 
   }
 
-  addUserDetails(int rewrd, double scr) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'Reward': rewrd,
-      'Score': scr,
-    });
-  }
+
 
 
   // reward dialog box
