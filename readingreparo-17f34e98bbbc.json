@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "readingreparo",
+  "private_key_id": "17f34e98bbbcb85d5352b410a695379897b87247",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFi1BwHRPusxBF\nn9rVnIIXD5lcw2RPuL8sstfAxioUeqSY0vHN02h1pOuLEiCWcEVIv7mlLQSa1IbZ\nMjo1WZRkjqq26Ji25jnNqIXUqTxXvvEmIHjVUnAhfSjsQJwGM7VAxmsnVqTwWkY0\n4w2TtyD/OKFtXmmj4U8b5C4MzEwfZEMkHrK/W8PFAi4qNoHXT2vhVrqCDPKnTtB1\n7e5DG1gLUisOclX9qhu5UOitBz0Z8aXaCNCYNSG8cxN1Gf034OAh3aGgTqswyFy1\n4N5GQRHFJ+36rNfL2ex6WVkVR9e+hMeIZkpOL0edi7GIGHg+4rZniLcLpTTiv2Sm\niG7kx0HNAgMBAAECggEAGz3tHcHAxCvBAQL4CCVSIFQtS9AMEXs1fG/LNWb3RJA0\nLXyymPMsVvtalVcQUL/8UjfSLhC95Lu/+mSVnTZ14AF+b6uJI55ZYkujaVtQlPG9\njbKIE7QqbZpzk6Ymbdl0ew8+4pp5MRKpSbabmWt9DrNFsuLUl/qpQZ5NiozOZoSp\nAI5lzyjqYEgkghn5mHOsWDxkcBm6gCmc9CTNUcIVjn8pb49/9YtjNHSsAKxx0+xU\nhHBwzO6e4xvYZbHqOEglJ2PmEiGWF7aufR6igT7KmedSwHgnxaHy9ioRBHrGuZMR\nEOZg7IhFcRdF5MnFKtunAoc3o1p5MPZTi78+EtFOQQKBgQC7FE3U6f2LBK9YGe7V\nlt4BwJY8Xc4UctPxiO2wcn8P51uD5WZMxZ9NV9dCBU2ytfYN8JfYC5zPuo3lPzG/\nMUa+wywafiMOCaIYGECs4S76heR37yGSbo/vK6u7WT+jxOka1w7u4hb+/eEsMmGG\nkJxsvNJLNXkvW8Z7rFGOeWhTcQKBgQC2vgr+xyBrFvFVqpc5AZdyq4c0slOJgxVh\nS5m/k065JTuSGhy5SoOe4Cp2R1wL8bMqD0yaT5kb4QWb3YKtxjeGY3rKtX0MoaEf\nadhYJ3uG4+zgf0MJgmeZ7EqOWPq350R/QNpRqHebVuf9G/flxv/D7acA12ocUzjv\nELfdwa+uHQKBgCnrUclcqRhmc1fdb7vic1qXKdLa/hts43riwMfh0ADjSYlTdMnN\nGnX9Mdm0UIWz6i+TcqLRb1DIr5TnxSDfTMff+djx3K7/j5ewj4Vta9Zs/BW3uqES\nLyRbd76iL/VlYQpHmCwE8zwt7S+3Fk1NyA9BfCmoEMCA4wfBRAEVyT+xAoGBAIxk\ncnQMLVa4mI4U8frkwyJgrw4IFm+l2k4WU7c/h5JsDVkQYJLlsTrkwxp9djTi6p9c\ng6BlmJ43gSSeyB+TEeNYF+UWC00h+3Pz0DbhlmAqSTir7KeonMk/JIQ5zdxte008\nWL21bLZVzQLCcu//s00mDlByLl42fZ4EvQ1MGRjtAoGBALILGDGX2sv1pvyCBs5s\nAOHPZFEu/fcsWVn/ENZVvE+6Q+O+iPWpDPeQjlkYMIwfsbxwWB20HykgEKLeAj/E\nVaDxJc4EDAuIxVX1slmUd3NOQuKrUsRPjs41F1wZ9sthrwSeT6Is5DFgPxrPUzph\n+wazvrdzfy2DEEDI876TzMZW\n-----END PRIVATE KEY-----\n",
+  "client_email": "readingreparoserviceaccount@readingreparo.iam.gserviceaccount.com",
+  "client_id": "108273207018009796181",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/readingreparoserviceaccount%40readingreparo.iam.gserviceaccount.com"
+}

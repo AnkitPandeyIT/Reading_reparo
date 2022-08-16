@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "201381599632",
+    "project_id": "readingreparo-d51bd",
+    "storage_bucket": "readingreparo-d51bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201381599632:android:ecb71ba4b1c1e9b756bb15",
+        "android_client_info": {
+          "package_name": "com.example.reading_reparo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201381599632-o1b8gma76elhms6cmknmveq9b9b674gn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAli0oRNU9lAHttux89UwGytkjFP1c41_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201381599632-o1b8gma76elhms6cmknmveq9b9b674gn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
