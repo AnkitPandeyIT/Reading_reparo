@@ -12,6 +12,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'fireBaseData.dart';
+import 'register_page.dart';
 
 class feedBackScreenRoute extends StatelessWidget {
   late List words;
@@ -54,8 +55,13 @@ class feedBackScreenRoute extends StatelessWidget {
 
     if (score > 90) {
       reward = 5;
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
+
+
       print("Rewarding " + reward.toString() + ' points');
-      addUserDetails(reward, score);
+
 
 
 
@@ -67,7 +73,9 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 80) {
       reward = 4; // store reward
-      addUserDetails(reward, score);
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
 
       print("Rewarding " + reward.toString() + ' points');
 
@@ -81,7 +89,9 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 70) {
       reward = 3; // store reward
-      addUserDetails(reward, score);
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
 
       print("Rewarding " + reward.toString() + ' points');
 
@@ -93,7 +103,9 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 60) {
       reward = 2; // store reward
-      addUserDetails(reward, score);
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
 
       print("Rewarding " + reward.toString() + ' points');
 
@@ -107,7 +119,9 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else if (score > 50) {
       reward = 1; // stoe reward
-      addUserDetails(reward, score);
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
 
       print("Rewarding " + reward.toString() + ' points');
 
@@ -121,7 +135,9 @@ class feedBackScreenRoute extends StatelessWidget {
       );
     } else {
       reward = 0; //store reward
-      addUserDetails(reward, score);
+      print("before execution");
+      updateFields(score,reward);
+      print("after execution");
       print("Rewarding " + reward.toString() + ' points');
 
 

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'fireBaseData.dart';
 import 'package:form_validator/form_validator.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -31,20 +32,40 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future signUp() async{
   if(passwordConfirmed()){
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(),
+    await
+    FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(),
         password: _passwordController.text.trim()).catchError((e){
     Fluttertoast.showToast(msg: e!.message);
     });
+
     // add user name to detabase
-    addUserName(_nameController.text.trim());
+     inputData();
+   // addUserName(_nameController.text.trim());
   }
   }
 
-  Future addUserName(String userName) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'name': userName,
-    });
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<void> inputData() async {
+    final User user = await auth.currentUser!;
+    final String uid = user.uid;
+    // here you write the codes to input the data into firestore
+    addDetails(_nameController.text.trim(),0,0,uid);
   }
+
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  // getCurrentUser() async {
+  //   final User user = await _auth.currentUser!;
+  //   final uid = user.uid;
+  //   print(uid);
+  //   //print(uemail);
+  // }
+
+  // Future addUserName(String userName) async {
+  //   await FirebaseFirestore.instance.collection('users').add({
+  //     'name': userName,
+  //   });
+  // }
 
   bool passwordConfirmed(){
     if(_passwordController.text.trim() == _confirmPasswordController.text.trim()){
