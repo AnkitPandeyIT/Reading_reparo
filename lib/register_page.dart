@@ -13,8 +13,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
-
   //text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -23,25 +21,31 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    email: _emailController.dispose();
-    password: _passwordController.dispose();
-    confirmPassword: _confirmPasswordController.dispose();
-    name:   _nameController.dispose();
+    email:
+    _emailController.dispose();
+    password:
+    _passwordController.dispose();
+    confirmPassword:
+    _confirmPasswordController.dispose();
+    name:
+    _nameController.dispose();
     super.dispose();
   }
 
-  Future signUp() async{
-  if(passwordConfirmed()){
-    await
-    FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(),
-        password: _passwordController.text.trim()).catchError((e){
-    Fluttertoast.showToast(msg: e!.message);
-    });
+  Future signUp() async {
+    if (passwordConfirmed()) {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim())
+          .catchError((e) {
+        Fluttertoast.showToast(msg: e!.message);
+      });
 
-    // add user name to detabase
-     inputData();
-   // addUserName(_nameController.text.trim());
-  }
+      // add user name to detabase
+      inputData();
+      // addUserName(_nameController.text.trim());
+    }
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -50,7 +54,8 @@ class _RegisterPageState extends State<RegisterPage> {
     final User user = await auth.currentUser!;
     final String uid = user.uid;
     // here you write the codes to input the data into firestore
-    addDetails(_nameController.text.trim(),0,0,uid);
+    // set username
+    setName(_nameController);
   }
 
   // final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -67,13 +72,13 @@ class _RegisterPageState extends State<RegisterPage> {
   //   });
   // }
 
-  bool passwordConfirmed(){
-    if(_passwordController.text.trim() == _confirmPasswordController.text.trim()){
+  bool passwordConfirmed() {
+    if (_passwordController.text.trim() ==
+        _confirmPasswordController.text.trim()) {
       return true;
-    }else{
+    } else {
       return false;
     }
-
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -91,231 +96,225 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
         backgroundColor: Colors.grey[300],
         body: SafeArea(
-
           child: Center(
             child: SingleChildScrollView(
-              child: Column(children: [
-                // logo png
+              child: Column(
+                children: [
+                  // logo png
 
+                  // dropdown
+                  Column(
+                    children: [
+                      SizedBox(height: 200),
+                      DropdownButton(
+                        // Initial Value
 
-                // dropdown
-                Column(
-                  children: [
-                    SizedBox(height: 200),
-                    DropdownButton(
+                        alignment: Alignment(-0.5, -0.5),
 
-                      // Initial Value
+                        value: dropdownvalue,
 
-                      alignment: Alignment(-0.5,-0.5),
+                        // Down Arrow Icon
+                        icon: const Icon(Icons.keyboard_arrow_down),
 
-
-                      value: dropdownvalue,
-
-
-                      // Down Arrow Icon
-                      icon: const Icon(Icons.keyboard_arrow_down),
-
-                      // Array list of items
-                      items: items.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
-
-                        );
-                      }).toList(),
-                      // After selecting the desired option,it will
-                      // change button value to selected value
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 30,),
-
-
-                    //name field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextFormField(
-                            controller: _nameController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Full Name',
-                            ),
-                            keyboardType: TextInputType.name,
-                            validator: (value){
-                              if(value!.isEmpty){
-                                return ("Please Enter your name");
-                              }
-
-                          },
-
-                          ),
-                        ),
+                        // Array list of items
+                        items: items.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownvalue = newValue!;
+                          });
+                        },
                       ),
-                    ),
-                    SizedBox(height: 15,),
-
-
-
-
-                    //email field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextFormField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Email',
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value){
-                              if(value!.isEmpty){
-                                return ("Please Enter Email");
-                              }
-                              // reg expression for email validation
-                              if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                                  .hasMatch(value)) {
-                                return ("Please Enter a valid email");
-                              }
-                              return null;
-                            }, onSaved: (value) {
-                            _emailController.text = value!;
-                          },
-
-                          ),
-                        ),
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    SizedBox(height: 15,),
 
-
-                    // password field
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Password',
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value){
-                              if(value!.isEmpty){
-                                return ("Please Enter Email");
-                              }
-                              // reg expression for email validation
-                              if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                                  .hasMatch(value)) {
-                                return ("Please Enter a valid email");
-                              }
-                              return null;
-                            }, onSaved: (value) {
-                            _emailController.text = value!;
-                          },
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 10,),
-
-
-                    // confirm password field
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                            controller: _confirmPasswordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Confirm Password',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-
-                    SizedBox(height: 10,),
-
-                    //signUp button
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: GestureDetector(
-                        onTap: signUp,
+                      //name field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Container(
-                          padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                              color: Colors.blue.shade300,
-                              borderRadius: BorderRadius.circular(12)),
-
-                          child: Center(
-                            child: Text('Sign Up', style: TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Full Name',
+                              ),
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return ("Please Enter your name");
+                                }
+                              },
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 15,),
+                      SizedBox(
+                        height: 15,
+                      ),
 
+                      //email field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextFormField(
+                              controller: _emailController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Email',
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return ("Please Enter Email");
+                                }
+                                // reg expression for email validation
+                                if (!RegExp(
+                                        "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                    .hasMatch(value)) {
+                                  return ("Please Enter a valid email");
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _emailController.text = value!;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
 
-                  ],
-                ),
+                      // password field
 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextFormField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Password',
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return ("Please Enter Email");
+                                }
+                                // reg expression for email validation
+                                if (!RegExp(
+                                        "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                    .hasMatch(value)) {
+                                  return ("Please Enter a valid email");
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _emailController.text = value!;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
 
+                      SizedBox(
+                        height: 10,
+                      ),
 
+                      // confirm password field
 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                              controller: _confirmPasswordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Confirm Password',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
 
-                //password field
+                      SizedBox(
+                        height: 10,
+                      ),
 
+                      //signUp button
 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: GestureDetector(
+                          onTap: signUp,
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                                color: Colors.blue.shade300,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Center(
+                              child: Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
 
-                //register field
+                  //password field
 
-
-              ],),
+                  //register field
+                ],
+              ),
             ),
-          ),)
-    );
+          ),
+        ));
   }
 }
